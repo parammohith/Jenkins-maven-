@@ -1,1 +1,24 @@
+pipeline {
+   agent {
+       docker { image 'maven:3.9.6-eclipse-temurin-17' } 
+   }
+    stages{
+        stage ('Build and Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+        stage ('packaging'){
+           steps {
+              sh 'mvn package'
+           }
+        }
+    }     
+      post {
+    always {
+        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        junit 'target/surefire-reports/*.xml'
+    }
+}  
+}
 
